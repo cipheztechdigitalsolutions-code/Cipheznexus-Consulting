@@ -16,7 +16,11 @@ const mono = IBM_Plex_Mono({
   display: "swap",
 });
 
-const SITE_URL = "https://cipheznexus.com";
+// GitHub Pages serves the site under /<repo>/. Metadata asset URLs (favicon,
+// OG image) don't inherit next.config basePath, so prefix them manually.
+const BASE_PATH =
+  process.env.NODE_ENV === "production" ? "/Cipheznexus-Consulting" : "";
+const SITE_URL = `https://cipheztechdigitalsolutions-code.github.io${BASE_PATH}`;
 const DESCRIPTION =
   "We design, build and ship AI systems for businesses that need results, not experiments. AI agents, workflow automation and product development.";
 
@@ -42,16 +46,16 @@ export const metadata: Metadata = {
     siteName: "CiphezNexus Consulting",
     title: "CiphezNexus Consulting — AI That Actually Moves Your Numbers",
     description: DESCRIPTION,
-    images: [{ url: "/og.svg", width: 1200, height: 630, alt: "CiphezNexus Consulting" }],
+    images: [{ url: `${BASE_PATH}/og.svg`, width: 1200, height: 630, alt: "CiphezNexus Consulting" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "CiphezNexus Consulting — AI That Actually Moves Your Numbers",
     description: DESCRIPTION,
-    images: ["/og.svg"],
+    images: [`${BASE_PATH}/og.svg`],
   },
   icons: {
-    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+    icon: [{ url: `${BASE_PATH}/favicon.svg`, type: "image/svg+xml" }],
   },
 };
 

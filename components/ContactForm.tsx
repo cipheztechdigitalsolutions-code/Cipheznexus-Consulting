@@ -13,27 +13,40 @@ export default function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState("");
 
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setStatus("submitting");
     setError("");
 
     const form = e.currentTarget;
-    const data = Object.fromEntries(new FormData(form).entries());
+    const data = Object.fromEntries(new FormData(form).entries()) as Record<string, string>;
 
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!res.ok) throw new Error((await res.json().catch(() => ({})))?.error || "Something went wrong.");
-      setStatus("success");
-      form.reset();
-    } catch (err) {
+    const name = (data.name || "").trim();
+    const email = (data.email || "").trim();
+    const details = (data.details || "").trim();
+    if (!name || !email || !details) {
       setStatus("error");
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setError("Please fill in your name, email and project details.");
+      return;
     }
+
+    // Static site (GitHub Pages) has no backend, so we hand off to the visitor's
+    // email client with a prefilled project brief.
+    const body = [
+      `Name: ${name}`,
+      `Email: ${email}`,
+      `Company: ${data.company || "—"}`,
+      "",
+      "Project details:",
+      details,
+    ].join("\n");
+
+    const href = `mailto:hello@cipheznexus.com?subject=${encodeURIComponent(
+      `Project inquiry from ${name}`
+    )}&body=${encodeURIComponent(body)}`;
+
+    window.location.href = href;
+    setStatus("success");
+    form.reset();
   }
 
   if (status === "success") {
@@ -44,10 +57,14 @@ export default function ContactForm() {
             <path d="M20 6 9 17l-5-5" />
           </svg>
         </div>
-        <h3 className="m-0 mb-2 text-[22px] font-bold">Message received.</h3>
+        <h3 className="m-0 mb-2 text-[22px] font-bold">Almost there.</h3>
         <p className="m-0 text-[15px] leading-[1.6] text-mute2">
-          Thanks — we&apos;ll get back to you within a day. For anything urgent,
-          reach us on WhatsApp.
+          Your email app should have opened with the brief prefilled — just hit
+          send. If it didn&apos;t, email us at{" "}
+          <a href="mailto:hello@cipheznexus.com" className="text-gold underline-offset-4 hover:underline">
+            hello@cipheznexus.com
+          </a>{" "}
+          or reach us on WhatsApp.
         </p>
         <button
           type="button"
