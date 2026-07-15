@@ -29,3 +29,7 @@ npm start
 ## Deploy (Vercel)
 
 Push to a Git repo and import at [vercel.com/new](https://vercel.com/new) — zero config. The contact endpoint logs leads by default; wire up your email/CRM provider in `app/api/contact/route.ts`.
+
+---
+
+_Building intelligent systems that ship._
